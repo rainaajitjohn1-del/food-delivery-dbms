@@ -3,3 +3,6 @@ db.properties
 *.iml
 out/
 .DS_Store
+db.properties
+out/
+.DS_Store
