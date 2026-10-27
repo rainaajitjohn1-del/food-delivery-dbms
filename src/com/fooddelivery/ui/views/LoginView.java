@@ -4,8 +4,10 @@ import com.fooddelivery.model.User;
 import com.fooddelivery.service.FoodDeliveryService;
 import com.fooddelivery.ui.AppTheme;
 import com.fooddelivery.ui.Icons;
+import com.fooddelivery.ui.components.PillChipButton;
 import com.fooddelivery.ui.components.PrimaryButton;
 import com.fooddelivery.ui.components.RoundCardPanel;
+import com.fooddelivery.ui.components.RoundedTextField;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -16,7 +18,7 @@ import javax.swing.border.EmptyBorder;
 
 /**
  * LoginView: Desktop split layout.
- * Left: Espresso branded showcase panel with typography and decorative accents.
+ * Left: Espresso branded showcase panel with typography and feature highlights sharing a single left edge.
  * Right: Warm off-white area with centered authentication form card and demo logins.
  */
 public class LoginView extends JPanel {
@@ -25,7 +27,7 @@ public class LoginView extends JPanel {
     private final Consumer<User> onLoginSuccess;
     private final Runnable onGoToRegister;
 
-    private final JTextField emailInput;
+    private final RoundedTextField emailInput;
     private final PrimaryButton signInBtn;
     private final JLabel errorLabel;
 
@@ -35,7 +37,9 @@ public class LoginView extends JPanel {
         this.onLoginSuccess = onLoginSuccess;
         this.onGoToRegister = onGoToRegister;
 
+        // -------------------------------------------------------------
         // LEFT PANEL: Espresso Branding Showcase
+        // -------------------------------------------------------------
         JPanel leftPanel = new JPanel(new BorderLayout()) {
             @Override
             protected void paintComponent(Graphics g) {
@@ -44,117 +48,131 @@ public class LoginView extends JPanel {
                 int w = getWidth();
                 int h = getHeight();
 
-                // Espresso base
+                // Solid espresso fill
                 g2.setColor(AppTheme.ESPRESSO);
                 g2.fillRect(0, 0, w, h);
 
-                // Organic Serenity Blue curved background blob
-                g2.setColor(new Color(0x8F, 0xA7, 0xC8, 45));
+                // Subtle organic Serenity Blue curve at bottom corner (low alpha, stays below text)
+                g2.setColor(new Color(0x8F, 0xA7, 0xC8, 25));
                 Path2D.Double blob = new Path2D.Double();
-                blob.moveTo(w * 0.2, h);
-                blob.curveTo(w * 0.5, h * 0.6, w * 0.3, h * 0.2, w, h * 0.1);
+                blob.moveTo(w * 0.35, h);
+                blob.curveTo(w * 0.6, h * 0.88, w * 0.7, h * 0.82, w, h * 0.78);
                 blob.lineTo(w, h);
                 blob.closePath();
                 g2.fill(blob);
 
                 g2.dispose();
-                super.paintComponent(g);
             }
         };
-        leftPanel.setBorder(new EmptyBorder(60, 60, 60, 60));
+        leftPanel.setOpaque(true);
+        leftPanel.setBackground(AppTheme.ESPRESSO);
+        leftPanel.setBorder(new EmptyBorder(48, 48, 48, 36));
 
         JPanel leftContent = new JPanel();
         leftContent.setOpaque(false);
         leftContent.setLayout(new BoxLayout(leftContent, BoxLayout.Y_AXIS));
 
-        JLabel logo = new JLabel(Icons.heart(44, AppTheme.BUTTERCREAM));
+        // 1. Logo & Brand - all strictly left-aligned sharing one edge
+        JLabel logo = new JLabel(Icons.heart(40, AppTheme.BUTTERCREAM));
+        logo.setAlignmentX(Component.LEFT_ALIGNMENT);
+
         JLabel brandName = new JLabel("Good Food");
         brandName.setFont(AppTheme.fontCardTitle());
         brandName.setForeground(AppTheme.SERENITY_BLUE);
+        brandName.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         JLabel heroHeading = new JLabel("<html>Good Food<br>Better Days.</html>");
         heroHeading.setFont(AppTheme.fontHero());
         heroHeading.setForeground(AppTheme.BUTTERCREAM);
+        heroHeading.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        JLabel heroSubtitle = new JLabel("<html>Fresh meals, happy moments.<br>Delivered directly to your door.</html>");
+        JLabel heroSubtitle = new JLabel("<html><div style='width:280px;color:#DED0C0;line-height:1.3;'>Fresh meals, happy moments.<br>Delivered directly to your door.</div></html>");
         heroSubtitle.setFont(AppTheme.fontBody());
         heroSubtitle.setForeground(new Color(0xDE, 0xD0, 0xC0));
+        heroSubtitle.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         leftContent.add(logo);
-        leftContent.add(Box.createVerticalStrut(12));
+        leftContent.add(Box.createVerticalStrut(10));
         leftContent.add(brandName);
-        leftContent.add(Box.createVerticalStrut(28));
+        leftContent.add(Box.createVerticalStrut(24));
         leftContent.add(heroHeading);
-        leftContent.add(Box.createVerticalStrut(16));
+        leftContent.add(Box.createVerticalStrut(14));
         leftContent.add(heroSubtitle);
-        leftContent.add(Box.createVerticalStrut(36));
+        leftContent.add(Box.createVerticalStrut(32));
 
-        // Value props
+        // 2. Checklist Props - share the exact same left alignment
         leftContent.add(createPropRow("Multi-restaurant desktop ordering"));
-        leftContent.add(Box.createVerticalStrut(12));
+        leftContent.add(Box.createVerticalStrut(14));
         leftContent.add(createPropRow("Real-time manager order workflow"));
-        leftContent.add(Box.createVerticalStrut(12));
+        leftContent.add(Box.createVerticalStrut(14));
         leftContent.add(createPropRow("Fleet assignment & live delivery tracking"));
 
         leftPanel.add(leftContent, BorderLayout.CENTER);
         add(leftPanel);
 
-        // RIGHT PANEL: Form Card on Warm Off-White
+        // -------------------------------------------------------------
+        // RIGHT PANEL: Authentication Form Card
+        // -------------------------------------------------------------
         JPanel rightPanel = new JPanel(new GridBagLayout());
         rightPanel.setBackground(AppTheme.WARM_OFF_WHITE);
 
+        // Card with equal 40px left/right and 36px top/bottom padding
         RoundCardPanel card = new RoundCardPanel(new BorderLayout());
-        card.setPreferredSize(new Dimension(440, 520));
-        card.setMinimumSize(new Dimension(400, 480));
-        card.setBorder(new EmptyBorder(32, 36, 32, 36));
+        card.setPreferredSize(new Dimension(450, 480));
+        card.setMinimumSize(new Dimension(400, 460));
+        card.setBorder(new EmptyBorder(36, 40, 36, 40));
 
+        // Form container: ALL children share LEFT_ALIGNMENT to avoid BoxLayout off-centering
         JPanel form = new JPanel();
         form.setOpaque(false);
         form.setLayout(new BoxLayout(form, BoxLayout.Y_AXIS));
 
+        // 1. Title & Subtitle
         JLabel title = new JLabel("Sign In");
         title.setFont(AppTheme.fontSection());
         title.setForeground(AppTheme.ESPRESSO);
+        title.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        JLabel subtitle = new JLabel("Access your customer, manager, or fleet portal");
+        JLabel subtitle = new JLabel("Sign in with your registered email.");
         subtitle.setFont(AppTheme.fontBody());
         subtitle.setForeground(AppTheme.TEXT_MUTED);
+        subtitle.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         form.add(title);
-        form.add(Box.createVerticalStrut(4));
+        form.add(Box.createVerticalStrut(6));
         form.add(subtitle);
-        form.add(Box.createVerticalStrut(22));
+        form.add(Box.createVerticalStrut(24)); // 24px between subtitle and presets
 
-        // Quick demo test accounts
-        JLabel demoTitle = new JLabel("Test Login Presets (Click to fill):");
+        // 2. Test Login Presets - exact same left edge and width
+        JLabel demoTitle = new JLabel("Test Login Presets (Click to autofill):");
         demoTitle.setFont(AppTheme.fontSmallBold());
         demoTitle.setForeground(AppTheme.TEXT_MUTED);
+        demoTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
         form.add(demoTitle);
         form.add(Box.createVerticalStrut(8));
 
-        JPanel chips = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
+        // GridLayout ensures buttons start at x=0 (no FlowLayout indentation) and span full column width
+        JPanel chips = new JPanel(new GridLayout(1, 3, 10, 0));
         chips.setOpaque(false);
+        chips.setAlignmentX(Component.LEFT_ALIGNMENT);
+        chips.setMaximumSize(new Dimension(Integer.MAX_VALUE, 36));
         chips.add(createDemoChip("Customer", "arjun.nair@gmail.com"));
         chips.add(createDemoChip("Manager", "rahul.menon@spicehub.in"));
         chips.add(createDemoChip("Agent", "imran.khan@fooddel.in"));
         form.add(chips);
-        form.add(Box.createVerticalStrut(20));
+        form.add(Box.createVerticalStrut(20)); // 20px between presets and Email field
 
-        // Email Form
+        // 3. Email Form Field - aligned exactly flush with field
+        JPanel emailCol = new JPanel(new BorderLayout(0, 4));
+        emailCol.setOpaque(false);
+        emailCol.setAlignmentX(Component.LEFT_ALIGNMENT);
+        emailCol.setMaximumSize(new Dimension(Integer.MAX_VALUE, 65));
+
         JLabel emailLbl = new JLabel("Email Address");
         emailLbl.setFont(AppTheme.fontBodyBold());
         emailLbl.setForeground(AppTheme.TEXT_PRIMARY);
 
-        emailInput = new JTextField();
-        emailInput.setFont(AppTheme.fontBody());
-        emailInput.setForeground(AppTheme.TEXT_PRIMARY);
-        emailInput.setBackground(AppTheme.BUTTERCREAM);
-        emailInput.setCaretColor(AppTheme.TEXT_PRIMARY);
-        emailInput.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(AppTheme.BORDER_LIGHT, 1),
-                BorderFactory.createEmptyBorder(10, 14, 10, 14)
-        ));
-        emailInput.setMaximumSize(new Dimension(Integer.MAX_VALUE, 44));
+        emailInput = new RoundedTextField("Enter your email address", 12);
         emailInput.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -164,29 +182,36 @@ public class LoginView extends JPanel {
             }
         });
 
-        form.add(emailLbl);
-        form.add(Box.createVerticalStrut(6));
-        form.add(emailInput);
-        form.add(Box.createVerticalStrut(14));
+        emailCol.add(emailLbl, BorderLayout.NORTH);
+        emailCol.add(emailInput, BorderLayout.CENTER);
+        form.add(emailCol);
 
         // Error message banner
-        errorLabel = new JLabel("", SwingConstants.CENTER);
+        errorLabel = new JLabel("", SwingConstants.LEFT);
         errorLabel.setFont(AppTheme.fontSmallBold());
         errorLabel.setForeground(AppTheme.ERROR_RED);
+        errorLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         errorLabel.setVisible(false);
         form.add(errorLabel);
-        form.add(Box.createVerticalStrut(12));
 
-        // Sign In Button
+        form.add(Box.createVerticalStrut(20)); // 20px between field and Sign In button
+
+        // 4. Sign In Button
         signInBtn = new PrimaryButton("Sign In");
+        signInBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
         signInBtn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 46));
         signInBtn.addActionListener(e -> performLogin());
         form.add(signInBtn);
-        form.add(Box.createVerticalStrut(20));
+        form.add(Box.createVerticalStrut(16)); // 16px between button and footer
 
-        // Register link
-        JPanel regRow = new JPanel(new FlowLayout(FlowLayout.CENTER, 4, 0));
+        // 5. Footer Row ("New to Good Food? Create account")
+        // Uses LEFT_ALIGNMENT with full column width so BoxLayout doesn't offset other components,
+        // while FlowLayout.CENTER centers the link under the button.
+        JPanel regRow = new JPanel(new FlowLayout(FlowLayout.CENTER, 6, 0));
         regRow.setOpaque(false);
+        regRow.setAlignmentX(Component.LEFT_ALIGNMENT);
+        regRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, 26));
+
         JLabel noAcc = new JLabel("New to Good Food?");
         noAcc.setFont(AppTheme.fontBody());
         noAcc.setForeground(AppTheme.TEXT_MUTED);
@@ -212,28 +237,25 @@ public class LoginView extends JPanel {
     }
 
     private JPanel createPropRow(String text) {
-        JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
+        JPanel p = new JPanel(new BorderLayout(10, 0));
         p.setOpaque(false);
+        p.setAlignmentX(Component.LEFT_ALIGNMENT);
+        p.setMaximumSize(new Dimension(360, 40));
+
         JLabel dot = new JLabel(Icons.check(14, AppTheme.SERENITY_BLUE));
-        JLabel lbl = new JLabel(text);
+        dot.setVerticalAlignment(SwingConstants.CENTER);
+
+        JLabel lbl = new JLabel("<html><div style='width:260px;color:#F3E3C0;line-height:1.2;'>" + text + "</div></html>");
         lbl.setFont(AppTheme.fontBody());
         lbl.setForeground(AppTheme.BUTTERCREAM);
-        p.add(dot);
-        p.add(lbl);
+
+        p.add(dot, BorderLayout.WEST);
+        p.add(lbl, BorderLayout.CENTER);
         return p;
     }
 
-    private JButton createDemoChip(String role, String email) {
-        JButton btn = new JButton(role);
-        btn.setFont(AppTheme.fontSmallBold());
-        btn.setForeground(AppTheme.ESPRESSO);
-        btn.setBackground(AppTheme.BUTTERCREAM);
-        btn.setFocusPainted(false);
-        btn.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(AppTheme.SERENITY_BLUE, 1),
-                BorderFactory.createEmptyBorder(6, 12, 6, 12)
-        ));
-        btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+    private PillChipButton createDemoChip(String role, String email) {
+        PillChipButton btn = new PillChipButton(role);
         btn.addActionListener(e -> {
             emailInput.setText(email);
             clearError();
@@ -277,7 +299,7 @@ public class LoginView extends JPanel {
     }
 
     private void showError(String msg) {
-        errorLabel.setText("<html><center style='max-width:320px;'>" + msg + "</center></html>");
+        errorLabel.setText("<html><div style='max-width:320px;color:#D32F2F;'>" + msg + "</div></html>");
         errorLabel.setVisible(true);
         revalidate();
         repaint();

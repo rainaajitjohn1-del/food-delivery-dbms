@@ -16,7 +16,7 @@ public class FoodDeliveryApp {
         System.setProperty("swing.aatext", "true");
 
         try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
         } catch (Exception ignored) { }
 
         // Initialize custom Plus Jakarta Sans fonts with SansSerif fallback

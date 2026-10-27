@@ -53,10 +53,14 @@ public class SearchField extends JTextField implements FocusListener {
         g2.setColor(AppTheme.BUTTERCREAM);
         g2.fillRoundRect(0, 0, w, h, h, h);
 
-        // Border if focused
+        // Border
         if (hasFocus()) {
             g2.setColor(AppTheme.SERENITY_BLUE);
             g2.setStroke(new BasicStroke(1.5f));
+            g2.drawRoundRect(1, 1, w - 2, h - 2, h - 2, h - 2);
+        } else {
+            g2.setColor(AppTheme.BUTTERCREAM_DARK);
+            g2.setStroke(new BasicStroke(1.0f));
             g2.drawRoundRect(1, 1, w - 2, h - 2, h - 2, h - 2);
         }
 

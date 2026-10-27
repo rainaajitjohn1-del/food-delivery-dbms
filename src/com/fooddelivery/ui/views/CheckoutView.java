@@ -7,8 +7,11 @@ import com.fooddelivery.model.User;
 import com.fooddelivery.service.FoodDeliveryService;
 import com.fooddelivery.ui.AppTheme;
 import com.fooddelivery.ui.Icons;
+import com.fooddelivery.ui.components.PillChipButton;
 import com.fooddelivery.ui.components.PrimaryButton;
 import com.fooddelivery.ui.components.RoundCardPanel;
+import com.fooddelivery.ui.components.RoundedComboBox;
+import com.fooddelivery.ui.components.RoundedTextField;
 import com.fooddelivery.ui.components.SecondaryButton;
 import java.awt.*;
 import java.util.*;
@@ -30,8 +33,8 @@ public class CheckoutView extends JPanel {
     private final Consumer<Integer> onOrderPlacedSuccess;
     private final Runnable onBackToMenu;
 
-    private final JComboBox<Address> addressCombo;
-    private final JTextField newCityInput;
+    private final RoundedComboBox<Address> addressCombo;
+    private final RoundedTextField newCityInput;
     private final ButtonGroup paymentGroup;
     private String selectedPaymentMethod = "UPI";
     private final JLabel subtotalLbl;
@@ -58,14 +61,7 @@ public class CheckoutView extends JPanel {
         topHeader.setOpaque(false);
         topHeader.setBorder(new EmptyBorder(24, 32, 16, 32));
 
-        JButton backBtn = new JButton(" Back to Menu");
-        backBtn.setIcon(Icons.back(16, AppTheme.ESPRESSO));
-        backBtn.setFont(AppTheme.fontBodyBold());
-        backBtn.setForeground(AppTheme.ESPRESSO);
-        backBtn.setBorderPainted(false);
-        backBtn.setContentAreaFilled(false);
-        backBtn.setFocusPainted(false);
-        backBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        PillChipButton backBtn = new PillChipButton(" Back to Menu", Icons.back(16, AppTheme.ESPRESSO));
         backBtn.addActionListener(e -> onBackToMenu.run());
 
         JLabel headerTitle = new JLabel("Checkout");
@@ -96,10 +92,7 @@ public class CheckoutView extends JPanel {
         leftContent.add(addrSection);
         leftContent.add(Box.createVerticalStrut(12));
 
-        addressCombo = new JComboBox<>();
-        addressCombo.setFont(AppTheme.fontBody());
-        addressCombo.setBackground(AppTheme.BUTTERCREAM);
-        addressCombo.setForeground(AppTheme.TEXT_PRIMARY);
+        addressCombo = new RoundedComboBox<>();
         addressCombo.setMaximumSize(new Dimension(Integer.MAX_VALUE, 42));
         leftContent.add(addressCombo);
         leftContent.add(Box.createVerticalStrut(12));
@@ -109,22 +102,9 @@ public class CheckoutView extends JPanel {
         addAddrRow.setOpaque(false);
         addAddrRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, 38));
 
-        newCityInput = new JTextField();
-        newCityInput.setFont(AppTheme.fontBody());
-        newCityInput.setBackground(AppTheme.WARM_OFF_WHITE);
-        newCityInput.setForeground(AppTheme.TEXT_PRIMARY);
-        newCityInput.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(AppTheme.BORDER_LIGHT, 1),
-                BorderFactory.createEmptyBorder(6, 10, 6, 10)
-        ));
-        newCityInput.setToolTipText("Enter city/area name");
+        newCityInput = new RoundedTextField("Enter city or area name", 12);
 
-        JButton addCityBtn = new JButton("+ Add City");
-        addCityBtn.setFont(AppTheme.fontSmallBold());
-        addCityBtn.setForeground(AppTheme.TEXT_WHITE);
-        addCityBtn.setBackground(AppTheme.SERENITY_BLUE);
-        addCityBtn.setFocusPainted(false);
-        addCityBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        SecondaryButton addCityBtn = new SecondaryButton("+ Add City", 999);
         addCityBtn.addActionListener(e -> addNewAddress());
 
         addAddrRow.add(newCityInput, BorderLayout.CENTER);

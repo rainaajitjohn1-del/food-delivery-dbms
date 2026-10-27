@@ -8,6 +8,8 @@ import com.fooddelivery.ui.AppTheme;
 import com.fooddelivery.ui.Icons;
 import com.fooddelivery.ui.components.PrimaryButton;
 import com.fooddelivery.ui.components.RoundCardPanel;
+import com.fooddelivery.ui.components.RoundedComboBox;
+import com.fooddelivery.ui.components.RoundedTextField;
 import com.fooddelivery.ui.components.SecondaryButton;
 import com.fooddelivery.ui.components.StatePanel;
 import com.fooddelivery.ui.components.StyledTable;
@@ -115,16 +117,81 @@ public class MenuManagerView extends JPanel {
         });
         bottomBar.add(editBtn);
 
-        JButton deleteBtn = new JButton("Delete Item");
-        deleteBtn.setFont(AppTheme.fontBodyBold());
-        deleteBtn.setForeground(AppTheme.ERROR_RED);
-        deleteBtn.setBackground(AppTheme.ERROR_TINT);
-        deleteBtn.setFocusPainted(false);
-        deleteBtn.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(AppTheme.ERROR_RED, 1),
-                BorderFactory.createEmptyBorder(8, 16, 8, 16)
-        ));
-        deleteBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        JButton deleteBtn = new JButton("Delete Item") {
+            private boolean isHovered = false;
+            private boolean isPressed = false;
+            {
+                setFont(AppTheme.fontBodyBold());
+                setForeground(AppTheme.ERROR_RED);
+                setContentAreaFilled(false);
+                setBorderPainted(false);
+                setFocusPainted(false);
+                setOpaque(false);
+                setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                addFocusListener(new java.awt.event.FocusAdapter() {
+                    @Override
+                    public void focusGained(java.awt.event.FocusEvent e) { repaint(); }
+                    @Override
+                    public void focusLost(java.awt.event.FocusEvent e) { repaint(); }
+                });
+                addMouseListener(new java.awt.event.MouseAdapter() {
+                    @Override
+                    public void mouseEntered(java.awt.event.MouseEvent e) { if (isEnabled()) { isHovered = true; repaint(); } }
+                    @Override
+                    public void mouseExited(java.awt.event.MouseEvent e) { isHovered = false; isPressed = false; repaint(); }
+                    @Override
+                    public void mousePressed(java.awt.event.MouseEvent e) { if (isEnabled()) { isPressed = true; repaint(); } }
+                    @Override
+                    public void mouseReleased(java.awt.event.MouseEvent e) { isPressed = false; repaint(); }
+                });
+            }
+
+            @Override
+            public Insets getInsets() {
+                return new Insets(8, 18, 8, 18);
+            }
+
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                AppTheme.enableAntialiasing(g2);
+                int w = getWidth();
+                int h = getHeight();
+                int r = h;
+
+                if (!isEnabled()) {
+                    g2.setColor(new Color(0xF4, 0xEE, 0xEE));
+                } else if (isPressed) {
+                    g2.setColor(new Color(0xF8, 0xCE, 0xCE));
+                } else if (isHovered) {
+                    g2.setColor(new Color(0xFD, 0xEE, 0xEE));
+                } else {
+                    g2.setColor(AppTheme.ERROR_TINT);
+                }
+                g2.fillRoundRect(1, 1, w - 2, h - 2, r, r);
+
+                if (hasFocus()) {
+                    g2.setColor(AppTheme.SERENITY_BLUE);
+                    g2.setStroke(new BasicStroke(1.8f));
+                    g2.drawRoundRect(1, 1, w - 3, h - 3, r, r);
+                } else {
+                    g2.setColor(AppTheme.ERROR_RED);
+                    g2.setStroke(new BasicStroke(1.2f));
+                    g2.drawRoundRect(1, 1, w - 2, h - 2, r, r);
+                }
+
+                FontMetrics fm = g2.getFontMetrics(getFont());
+                int strW = fm.stringWidth(getText());
+                int x = (w - strW) / 2;
+                int y = (h + fm.getAscent() - fm.getDescent()) / 2;
+
+                g2.setFont(getFont());
+                g2.setColor(isEnabled() ? AppTheme.ERROR_RED : AppTheme.TEXT_MUTED);
+                g2.drawString(getText(), x, y);
+
+                g2.dispose();
+            }
+        };
         deleteBtn.addActionListener(e -> performDeleteItem());
         bottomBar.add(deleteBtn);
 
@@ -206,18 +273,18 @@ public class MenuManagerView extends JPanel {
         p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
         p.setBorder(new EmptyBorder(24, 28, 24, 28));
 
-        JTextField nameField = new JTextField(isEdit ? existing.itemName() : "");
-        nameField.setFont(AppTheme.fontBody());
-        nameField.setBackground(AppTheme.BUTTERCREAM);
+        RoundedTextField nameField = new RoundedTextField(isEdit ? existing.itemName() : "", 12);
+        nameField.setPreferredSize(new Dimension(380, 40));
+        nameField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
 
-        JComboBox<String> catBox = new JComboBox<>(FoodDeliveryService.CATEGORIES);
-        catBox.setFont(AppTheme.fontBody());
-        catBox.setBackground(AppTheme.BUTTERCREAM);
+        RoundedComboBox<String> catBox = new RoundedComboBox<>(FoodDeliveryService.CATEGORIES);
+        catBox.setPreferredSize(new Dimension(380, 40));
+        catBox.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
         if (isEdit) catBox.setSelectedItem(existing.category());
 
-        JTextField priceField = new JTextField(isEdit ? String.valueOf(existing.price()) : "");
-        priceField.setFont(AppTheme.fontBody());
-        priceField.setBackground(AppTheme.BUTTERCREAM);
+        RoundedTextField priceField = new RoundedTextField(isEdit ? String.valueOf(existing.price()) : "", 12);
+        priceField.setPreferredSize(new Dimension(380, 40));
+        priceField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
 
         p.add(new JLabel("Dish Name:"));
         p.add(Box.createVerticalStrut(4));

@@ -6,6 +6,7 @@ import com.fooddelivery.service.FoodDeliveryService;
 import com.fooddelivery.ui.AppTheme;
 import com.fooddelivery.ui.components.PrimaryButton;
 import com.fooddelivery.ui.components.RoundCardPanel;
+import com.fooddelivery.ui.components.SecondaryButton;
 import com.fooddelivery.ui.components.StatePanel;
 import com.fooddelivery.ui.components.StyledTable;
 import java.awt.*;
@@ -82,8 +83,7 @@ public class AssignAgentDialog extends JDialog {
         JPanel bottom = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
         bottom.setOpaque(false);
 
-        JButton cancelBtn = new JButton("Cancel");
-        cancelBtn.setFont(AppTheme.fontBody());
+        SecondaryButton cancelBtn = new SecondaryButton("Cancel");
         cancelBtn.addActionListener(e -> dispose());
         bottom.add(cancelBtn);
 

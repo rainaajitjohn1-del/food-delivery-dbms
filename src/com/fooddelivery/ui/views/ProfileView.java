@@ -7,6 +7,7 @@ import com.fooddelivery.ui.Icons;
 import com.fooddelivery.ui.components.PillBadge;
 import com.fooddelivery.ui.components.PrimaryButton;
 import com.fooddelivery.ui.components.RoundCardPanel;
+import com.fooddelivery.ui.components.RoundedTextField;
 import com.fooddelivery.ui.components.SecondaryButton;
 import java.awt.*;
 import java.util.function.Consumer;
@@ -24,7 +25,7 @@ public class ProfileView extends JPanel {
     private final Consumer<String> onNavigate;
 
     private final JPanel phonesBox;
-    private final JTextField newPhoneInput;
+    private final RoundedTextField newPhoneInput;
 
     public ProfileView(FoodDeliveryService api, User currentUser, Consumer<String> onNavigate) {
         super(new BorderLayout());
@@ -116,22 +117,9 @@ public class ProfileView extends JPanel {
         addPhoneRow.setOpaque(false);
         addPhoneRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, 38));
 
-        newPhoneInput = new JTextField();
-        newPhoneInput.setFont(AppTheme.fontBody());
-        newPhoneInput.setBackground(AppTheme.BUTTERCREAM);
-        newPhoneInput.setForeground(AppTheme.TEXT_PRIMARY);
-        newPhoneInput.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(AppTheme.BORDER_LIGHT, 1),
-                BorderFactory.createEmptyBorder(6, 10, 6, 10)
-        ));
-        newPhoneInput.setToolTipText("Enter 10-digit mobile");
+        newPhoneInput = new RoundedTextField("Enter 10-digit mobile", 12);
 
-        JButton addPhoneBtn = new JButton("+ Add Phone");
-        addPhoneBtn.setFont(AppTheme.fontSmallBold());
-        addPhoneBtn.setForeground(AppTheme.TEXT_WHITE);
-        addPhoneBtn.setBackground(AppTheme.SERENITY_BLUE);
-        addPhoneBtn.setFocusPainted(false);
-        addPhoneBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        SecondaryButton addPhoneBtn = new SecondaryButton("+ Add Phone", 999);
         addPhoneBtn.addActionListener(e -> performAddPhone());
 
         addPhoneRow.add(newPhoneInput, BorderLayout.CENTER);

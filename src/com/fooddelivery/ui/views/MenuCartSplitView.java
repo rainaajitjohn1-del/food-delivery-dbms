@@ -42,7 +42,7 @@ public class MenuCartSplitView extends JPanel {
     private final JLabel discountLabel;
     private final JLabel totalLabel;
     private final PrimaryButton checkoutBtn;
-    private final JTextField couponInput;
+    private final RoundedTextField couponInput;
     private final JLabel emptyCartNotice;
 
     public MenuCartSplitView(FoodDeliveryService api, User currentUser, Restaurant restaurant,
@@ -62,14 +62,7 @@ public class MenuCartSplitView extends JPanel {
         topHeader.setOpaque(false);
         topHeader.setBorder(new EmptyBorder(20, 28, 12, 28));
 
-        JButton backBtn = new JButton(" All Restaurants");
-        backBtn.setIcon(Icons.back(16, AppTheme.ESPRESSO));
-        backBtn.setFont(AppTheme.fontBodyBold());
-        backBtn.setForeground(AppTheme.ESPRESSO);
-        backBtn.setBorderPainted(false);
-        backBtn.setContentAreaFilled(false);
-        backBtn.setFocusPainted(false);
-        backBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        PillChipButton backBtn = new PillChipButton(" All Restaurants", Icons.back(16, AppTheme.ESPRESSO));
         backBtn.addActionListener(e -> onBackToRestaurants.run());
 
         JPanel titleBlock = new JPanel(new FlowLayout(FlowLayout.LEFT, 12, 0));
@@ -182,22 +175,10 @@ public class MenuCartSplitView extends JPanel {
         // Coupon row
         JPanel couponRow = new JPanel(new BorderLayout(6, 0));
         couponRow.setOpaque(false);
-        couponInput = new JTextField();
-        couponInput.setFont(AppTheme.fontSmall());
-        couponInput.setBackground(AppTheme.BUTTERCREAM);
-        couponInput.setForeground(AppTheme.TEXT_PRIMARY);
-        couponInput.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(AppTheme.BORDER_LIGHT, 1),
-                BorderFactory.createEmptyBorder(6, 8, 6, 8)
-        ));
-        couponInput.setToolTipText("Enter coupon (e.g. FEST10)");
+        couponInput = new RoundedTextField("Enter coupon (e.g. FEST10)", 12);
+        couponInput.setPreferredSize(new Dimension(170, 36));
 
-        JButton applyCouponBtn = new JButton("Apply");
-        applyCouponBtn.setFont(AppTheme.fontSmallBold());
-        applyCouponBtn.setForeground(AppTheme.ESPRESSO);
-        applyCouponBtn.setBackground(AppTheme.BUTTERCREAM);
-        applyCouponBtn.setFocusPainted(false);
-        applyCouponBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        SecondaryButton applyCouponBtn = new SecondaryButton("Apply", 999);
         applyCouponBtn.addActionListener(e -> {
             couponCode = couponInput.getText().trim();
             updateTotals();

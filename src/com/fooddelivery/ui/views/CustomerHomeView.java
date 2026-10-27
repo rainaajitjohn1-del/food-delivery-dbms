@@ -137,45 +137,23 @@ public class CustomerHomeView extends JPanel {
         loadRestaurants();
     }
 
-    private JButton createCategoryChip(String category) {
-        JButton btn = new JButton(category);
-        btn.setFont(AppTheme.fontSmallBold());
-        btn.setFocusPainted(false);
-        btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        updateChipStyle(btn, category.equals(selectedCategory));
+    private PillChipButton createCategoryChip(String category) {
+        PillChipButton btn = new PillChipButton(category);
+        btn.setSelectedChip(category.equals(selectedCategory));
 
         btn.addActionListener(e -> {
             selectedCategory = category;
-            // update all chips in parent
             Container parent = btn.getParent();
             if (parent != null) {
                 for (Component c : parent.getComponents()) {
-                    if (c instanceof JButton b) {
-                        updateChipStyle(b, b.getText().equals(selectedCategory));
+                    if (c instanceof PillChipButton b) {
+                        b.setSelectedChip(b.getText().equals(selectedCategory));
                     }
                 }
             }
             filterRestaurants();
         });
         return btn;
-    }
-
-    private void updateChipStyle(JButton btn, boolean isSelected) {
-        if (isSelected) {
-            btn.setBackground(AppTheme.ESPRESSO);
-            btn.setForeground(AppTheme.BUTTERCREAM);
-            btn.setBorder(BorderFactory.createCompoundBorder(
-                    BorderFactory.createLineBorder(AppTheme.ESPRESSO, 1),
-                    BorderFactory.createEmptyBorder(6, 16, 6, 16)
-            ));
-        } else {
-            btn.setBackground(AppTheme.WARM_OFF_WHITE);
-            btn.setForeground(AppTheme.TEXT_PRIMARY);
-            btn.setBorder(BorderFactory.createCompoundBorder(
-                    BorderFactory.createLineBorder(AppTheme.BORDER_LIGHT, 1),
-                    BorderFactory.createEmptyBorder(6, 16, 6, 16)
-            ));
-        }
     }
 
     public void loadRestaurants() {

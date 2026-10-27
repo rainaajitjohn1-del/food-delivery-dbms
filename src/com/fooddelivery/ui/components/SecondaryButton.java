@@ -66,6 +66,18 @@ public class SecondaryButton extends JButton {
                 repaint();
             }
         });
+
+        addFocusListener(new java.awt.event.FocusAdapter() {
+            @Override
+            public void focusGained(java.awt.event.FocusEvent e) {
+                repaint();
+            }
+
+            @Override
+            public void focusLost(java.awt.event.FocusEvent e) {
+                repaint();
+            }
+        });
     }
 
     public void setCornerRadius(int r) {
@@ -98,6 +110,13 @@ public class SecondaryButton extends JButton {
         }
 
         g2.fillRoundRect(0, 0, w, h, r, r);
+
+        // Focus ring
+        if (hasFocus()) {
+            g2.setColor(AppTheme.ESPRESSO);
+            g2.setStroke(new BasicStroke(1.8f));
+            g2.drawRoundRect(1, 1, w - 3, h - 3, r, r);
+        }
 
         FontMetrics fm = g2.getFontMetrics(getFont());
         int strWidth = fm.stringWidth(getText());
